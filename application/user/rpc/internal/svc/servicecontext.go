@@ -1,13 +1,20 @@
 package svc
 
-import "minizhihu/application/user/rpc/internal/config"
+import (
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"minizhihu/application/user/rpc/internal/config"
+	"minizhihu/application/user/rpc/internal/model"
+)
 
 type ServiceContext struct {
-	Config config.Config
+	Config    config.Config
+	UserModel model.UserModelExtra
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+
 	return &ServiceContext{
-		Config: c,
+		Config:    c,
+		UserModel: model.NewUserModelExtra(sqlx.NewMysql(c.DataSource), c.CacheRedis),
 	}
 }
