@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"minizhihu/application/applet/internal/config"
 	"minizhihu/application/user/rpc/user"
+	"minizhihu/package/interceptors"
 )
 
 type ServiceContext struct {
@@ -14,8 +15,11 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	//TODO: 添加自定义拦截器
-	userRPC := zrpc.MustNewClient(c.UserRPC)
+
+	// 添加自定义拦截器
+	// 将RPC服务返回的错误码，解析为XCode类型
+	userRPC := zrpc.MustNewClient(c.UserRPC, zrpc.WithUnaryClientInterceptor(interceptors.ClientErrorInterceptor()))
+
 	return &ServiceContext{
 		Config:   c,
 		UserRPC:  user.NewUser(userRPC),

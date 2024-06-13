@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"minizhihu/package/xcode"
 
 	"minizhihu/application/applet/internal/config"
 	"minizhihu/application/applet/internal/handler"
@@ -25,6 +27,8 @@ func main() {
 	defer server.Stop()
 
 	handler.RegisterHandlers(server, ctx)
+	// 自定义错误处理方法
+	httpx.SetErrorHandler(xcode.ErrHandler)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

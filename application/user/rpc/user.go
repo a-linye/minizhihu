@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"minizhihu/package/interceptors"
 
 	"minizhihu/application/user/rpc/internal/config"
 	"minizhihu/application/user/rpc/internal/server"
@@ -33,7 +34,10 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
+	// 自定义拦截器
+	s.AddUnaryInterceptors(interceptors.ServerErrorInterceptor())
 	defer s.Stop()
+	// 自定义拦截器
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

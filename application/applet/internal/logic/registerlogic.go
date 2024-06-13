@@ -104,7 +104,6 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 			AccessExpire: token.AccessExpire,
 		},
 	}, nil
-	return
 }
 
 func checkVerificationCode(rds *redis.Redis, mobile, code string) error {
