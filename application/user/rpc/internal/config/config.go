@@ -11,4 +11,9 @@ type Config struct {
 	DataSource string
 	CacheRedis cache.CacheConf
 	BizRedis   redis.RedisConf
+	SMSClient  struct {
+		ConnAddress     string
+		AccessKeyID     string
+		AccessKeySecret string
+	}
 }
