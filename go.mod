@@ -3,6 +3,8 @@ module minizhihu
 go 1.21.0
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.62.761
+	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/protobuf v1.5.4
 	github.com/pkg/errors v0.9.1
@@ -13,7 +15,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.62.761 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
