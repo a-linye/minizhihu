@@ -58,6 +58,7 @@ func (l *VerificationLogic) Verification(req *types.VerificationRequest) (resp *
 	// 发送短信
 	_, err = l.svcCtx.UserRPC.SendSms(l.ctx, &user.SendSmsRequest{
 		Mobile: req.Mobile,
+		Code:   code,
 	})
 	if err != nil {
 		logx.Errorf("sendSms mobile: %s error: %v", req.Mobile, err)

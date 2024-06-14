@@ -15,7 +15,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	client, err := dysmsapi.NewClientWithAccessKey(c.SMSClient.ConnAddress, c.SMSClient.AccessKeyID, c.SMSClient.ConnAddress)
+	client, err := dysmsapi.NewClientWithAccessKey(c.SMSClient.ConnAddress, c.SMSClient.AccessKeyID, c.SMSClient.AccessKeySecret)
 	if err != nil {
 		logx.Errorf("Failed to create SMS client: %v", err)
 		return nil

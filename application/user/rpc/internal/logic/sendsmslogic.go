@@ -31,8 +31,8 @@ func (l *SendSmsLogic) SendSms(in *service.SendSmsRequest) (*service.SendSmsResp
 	request := dysmsapi.CreateSendSmsRequest()       //创建请求
 	request.Scheme = "https"                         //请求协议
 	request.PhoneNumbers = in.Mobile                 //接收短信的手机号码
-	request.SignName = "教程"                          //短信签名名称
-	request.TemplateCode = "SMS_******236"           //短信模板ID
+	request.SignName = "minizhihu"                   //短信签名名称
+	request.TemplateCode = "SMS_468300338"           //短信模板ID
 	par, err := json.Marshal(map[string]interface{}{ //定义短信模板参数（具体需要几个参数根据自己短信模板格式）
 		"code": in.Code,
 	})
