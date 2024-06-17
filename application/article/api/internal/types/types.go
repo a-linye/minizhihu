@@ -15,3 +15,36 @@ type PublishRequest struct {
 type PublishResponse struct {
 	ArticleId int64 `json:"article_id"`
 }
+
+type ArticleDetailRequest struct {
+	ArticleId int64 `json:"article_id"`
+}
+
+type ArticleDetailRespone struct {
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	Description string `json:"description"`
+	Cover       string `json:"cover"`
+	AuthorId    string `json:"author_id"`
+	AuthorName  string `json:"author_name"`
+}
+
+type ArticleListRequest struct {
+	AuthorId  int64 `json:"author_id"`
+	Cursor    int64 `json:"cursor"`
+	PageSize  int64 `json:"page_size"`
+	SortType  int32 `json:"sort_type"`
+	ArticleId int64 `json:"article_id"`
+}
+
+type ArticleInfo struct {
+	ArticleId   int64  `json:"article_id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	Description string `json:"description"`
+	Cover       string `json:"cover"`
+}
+
+type ArticleListResponse struct {
+	Articles []ArticleInfo `json:"articles"`
+}
