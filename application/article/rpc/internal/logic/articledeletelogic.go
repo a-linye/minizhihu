@@ -2,6 +2,9 @@ package logic
 
 import (
 	"context"
+	"minizhihu/application/article/rpc/internal/code"
+	"minizhihu/application/article/rpc/internal/types"
+	"minizhihu/package/xcode"
 
 	"minizhihu/application/article/rpc/internal/svc"
 	"minizhihu/application/article/rpc/pb"
@@ -24,7 +27,33 @@ func NewArticleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Art
 }
 
 func (l *ArticleDeleteLogic) ArticleDelete(in *pb.ArticleDeleteRequest) (*pb.ArticleDeleteResponse, error) {
-	// todo: add your logic here and delete this line
+	if in.UserId <= 0 {
+		return nil, code.UserIdInvalid
+	}
+	if in.ArticleId <= 0 {
+		return nil, code.ArticleIdInvalid
+	}
+	article, err := l.svcCtx.ArticleModelExtra.FindOne(l.ctx, in.ArticleId)
+	if err != nil {
+		l.Logger.Errorf("ArticleDelete FindOne req: %v error: %v", in, err)
+		return nil, err
+	}
+	if article.AuthorId != in.UserId {
+		return nil, xcode.AccessDenied
+	}
+	err = l.svcCtx.ArticleModelExtra.UpdateArticleStatus(l.ctx, in.ArticleId, types.ArticleStatusUserDelete)
+	if err != nil {
+		l.Logger.Errorf("UpdateArticleStatus req: %v error: %v", in, err)
+		return nil, err
+	}
+	_, err = l.svcCtx.BizRedis.ZremCtx(l.ctx, articlesKey(in.UserId, types.SortPublishTime), in.ArticleId)
+	if err != nil {
+		l.Logger.Errorf("ZremCtx req: %v error: %v", in, err)
+	}
+	_, err = l.svcCtx.BizRedis.ZremCtx(l.ctx, articlesKey(in.UserId, types.SortLikeCount), in.ArticleId)
+	if err != nil {
+		l.Logger.Errorf("ZremCtx req: %v error: %v", in, err)
+	}
 
 	return &pb.ArticleDeleteResponse{}, nil
 }

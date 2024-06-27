@@ -2,6 +2,9 @@ package logic
 
 import (
 	"context"
+	"minizhihu/application/article/rpc/article"
+	"minizhihu/application/user/rpc/user"
+	"strconv"
 
 	"minizhihu/application/article/api/internal/svc"
 	"minizhihu/application/article/api/internal/types"
@@ -23,8 +26,32 @@ func NewArticleDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Art
 	}
 }
 
-func (l *ArticleDetailLogic) ArticleDetail(req *types.PublishRequest) (resp *types.PublishResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *ArticleDetailLogic) ArticleDetail(req *types.ArticleDetailRequest) (resp *types.ArticleDetailRespone, err error) {
+	articleInfo, err := l.svcCtx.ArticleRPC.ArticleDetail(l.ctx, &article.ArticleDetailRequest{
+		ArticleId: req.ArticleId,
+	})
+	if err != nil {
+		logx.Errorf("get article detail id: %d err: %v", req.ArticleId, err)
+		return nil, err
+	}
+	if articleInfo == nil || articleInfo.Article == nil {
+		return nil, nil
+	}
+	userInfo, err := l.svcCtx.UserRPC.FindById(l.ctx, &user.FindByIdRequest{
+		UserId: articleInfo.Article.AuthorId,
+	})
+	if err != nil {
+		logx.Errorf("get userInfo id: %d err: %v", articleInfo.Article.AuthorId, err)
+		return nil, err
+	}
 
+	return &types.ArticleDetailRespone{
+		Title:       articleInfo.Article.Title,
+		Content:     articleInfo.Article.Content,
+		Description: articleInfo.Article.Description,
+		Cover:       articleInfo.Article.Cover,
+		AuthorId:    strconv.FormatInt(articleInfo.Article.AuthorId, 10),
+		AuthorName:  userInfo.Username,
+	}, nil
 	return
 }

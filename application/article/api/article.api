@@ -60,7 +60,7 @@ service article-api {
 	@handler PublishHandler
 	post /publish (PublishRequest) returns (PublishResponse)
 	@handler ArticleListHandler
-	post /ArticleList (PublishRequest) returns (PublishResponse)
+	post /ArticleList (ArticleListRequest) returns (ArticleListResponse)
 	@handler ArticleDetailHandler
-	post /ArticleDetail (PublishRequest) returns (PublishResponse)
+	post /ArticleDetail (ArticleDetailRequest) returns (ArticleDetailRespone)
 }

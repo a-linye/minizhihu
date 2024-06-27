@@ -2,12 +2,18 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
+	"minizhihu/application/article/api/internal/code"
+	"minizhihu/application/article/rpc/pb"
+	"minizhihu/package/xcode"
 
 	"minizhihu/application/article/api/internal/svc"
 	"minizhihu/application/article/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
+
+const minContentLen = 80
 
 type PublishLogic struct {
 	logx.Logger
@@ -24,7 +30,32 @@ func NewPublishLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishLo
 }
 
 func (l *PublishLogic) Publish(req *types.PublishRequest) (resp *types.PublishResponse, err error) {
-	// todo: add your logic here and delete this line
+	if len(req.Title) == 0 {
+		return nil, code.ArtitleTitleEmpty
+	}
+	if len(req.Content) < minContentLen {
+		return nil, code.ArticleContentTooFewWords
+	}
+	if len(req.Cover) == 0 {
+		return nil, code.ArticleCoverEmpty
+	}
+	userId, err := l.ctx.Value("userId").(json.Number).Int64()
+	if err != nil {
+		logx.Errorf("l.ctx.Value error: %v", err)
+		return nil, xcode.NoLogin
+	}
 
-	return
+	pret, err := l.svcCtx.ArticleRPC.Publish(l.ctx, &pb.PublishRequest{
+		UserId:      userId,
+		Title:       req.Title,
+		Content:     req.Content,
+		Description: req.Description,
+		Cover:       req.Cover,
+	})
+	if err != nil {
+		logx.Errorf("l.svcCtx.ArticleRPC.Publish req: %v userId: %d error: %v", req, userId, err)
+		return nil, err
+	}
+
+	return &types.PublishResponse{ArticleId: pret.ArticleId}, nil
 }
